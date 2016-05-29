@@ -35,7 +35,18 @@ struct line_data_t {
 
 /// Parse the line from objdump
 line_data_t parse_objdump (const vector <string>& data) {
-    return {};
+    line_data_t ans;
+    {
+        stringstream ss (data[0]);
+        ss >> hex >> ans.address;
+        ss.ignore (10, '<');
+        ss >> ans.offset;
+    }
+    {
+        stringstream ss (data[2]);
+        ss >> ans.cmd;
+    }
+    return ans;
 }
 
 /// Parse the line from gdb
@@ -85,6 +96,7 @@ void DumpLine::update_internal() {
     else if (fields.size() == 3)
         this_values = parse_objdump(fields);
     else {
+        address = 0;
 //         cerr << "\n";
     }
 }
