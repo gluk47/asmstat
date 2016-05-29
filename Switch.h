@@ -1,6 +1,6 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2016  <copyright holder> <email>
+ * Asm stat tool for reading objdumps
+ * Copyright © 2016  gluk47@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * The code in this file is fully authored by Egor Kochetov <gluk47@gmail.com>
+ * Feel free to contact him if you need this file with GPL restrictions waived.
  */
 
 #ifndef SWITCH_H
