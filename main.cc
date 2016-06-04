@@ -32,20 +32,6 @@
 
 using namespace std;
 
-int run (int i) {
-    int iteration;
-    while (i > 0) {
-        if (i % 2)
-            i = 3 * i + 1;
-        else
-            i /= 2;
-        if (i % 64)
-            break;
-        ++iteration;
-    }
-    return iteration;
-}
-
 /** Extract data from the dump stream.
  * @param[in,out] dump the stream with data. It is exhausted when the function returns.
  * @param[out] lines the list of all the lines in order they are in @c dump.
@@ -68,8 +54,6 @@ void readDump (std::istream& dump,
         dump.getline(linebuf, extent<decltype(linebuf)>());
         if (not dump)
             break;
-        //         cerr << "[" << i << "] ";
-        //         cerr << line << "...";
         lines.emplace_back(make_unique<DumpLine> (linebuf, i));
         auto& newLine = *lines.back();
         const auto& addr = newLine.address;
@@ -113,7 +97,7 @@ void readDump (std::istream& dump,
 #endif
 }
 
-/// Set up the label value for each jump in jumps.
+/// Set up the level value for each jump in jumps.
 /// Return the maximal level value among all jumps
 int sortJumps (const map <uint64_t, shared_ptr <JumpInfo>>& jumps) {
     vector <JumpInfo*> current_jumps;
@@ -137,6 +121,15 @@ int sortJumps (const map <uint64_t, shared_ptr <JumpInfo>>& jumps) {
     return current_jumps.size();
 }
 
+/**
+ * @brief Print all the sources annotated with jumps
+ *
+ * @param lines dump lines, in order
+ * @param jumps jumps, sorted by PC address and (thus) by dump line number
+ * @param prefix_l how many columns to leave for jumps lines
+ *              (how many jumps go through one src line max)
+ * @return void
+ */
 void printLines (list <unique_ptr <DumpLine>>& lines,
                  map <uint64_t, shared_ptr <JumpInfo>>& jumps,
                  int prefix_l) {
@@ -206,14 +199,7 @@ int main(int argc, char **argv) {
     map <uint64_t, DumpLine*> lines_by_address;
     readDump(dump, lines, jumps, lines_by_address);
     int max_open_jumps = sortJumps(jumps);
-//     cerr << "max_open_jumps: " << max_open_jumps << "\n";
+    cerr << "max_open_jumps: " << max_open_jumps << "\n";
     printLines(lines, jumps, max_open_jumps);
-//     for (auto& line : lines) {
-//         if (not line.is_jump())
-//             continue;
-//         jump_targets [line.jump_target_address()] =
-//             {&line, lines_by_address[line.jump_target_address()]};
-//     }
-
     return 0;
 }
